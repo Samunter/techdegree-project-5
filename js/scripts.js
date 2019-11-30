@@ -1,6 +1,3 @@
-// Defined in fetch() as the returned json data
-let people;
-
 // Creates a card for each employee and displays them.
 function createGallery(people) {
   let galleryHTML = '';
@@ -35,6 +32,7 @@ function formatDOB(person) {
 function createModal(people, index) {
   const person = people[index];
   const modalContainer = document.createElement('div');
+
   document.body.appendChild(modalContainer);
   modalContainer.className = 'modal-container';
   modalContainer.innerHTML = `
@@ -60,29 +58,40 @@ function createModal(people, index) {
             </div>
         </div>
     `;
+
+  // removes modal when close button is clicked
+  const closeButton = document.getElementById('modal-close-btn');
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(modalContainer);
+  });
 }
 
-// Returns employee info and calls createGallery() to display it.
-fetch(
-  'https://randomuser.me/api/?results=15&inc=name,email,location,dob,picture,cell&nat=us&noinfo'
-)
-  .then(res => res.json())
-  //.then(console.log);
-  .then(json => {
-    people = json.results;
-    createGallery(people);
-  });
+// fetches data and executes functions that rely on that data
+async function runProgram() {
+  // Defined in fetch() as the returned json data
+  let people;
 
-// Attaches event listener to each employee card.
-// Event handler creates popup window for the clicked employee.
-// const cards = document.getElementsByClassName('card');
-// for (let i = 0; i < cards.length; i++) {
-//   const card = cards[i];
-//   card.addEventListener('click', () => createModal(people, card.dataset.index));
-// }
+  // Returns employee info and calls createGallery() to display it.
+  await fetch(
+    'https://randomuser.me/api/?results=12&inc=name,email,location,dob,picture,cell&nat=us&noinfo'
+  )
+    .then(res => res.json())
+    //.then(console.log);
+    .then(json => {
+      people = json.results;
+      createGallery(people);
+    });
 
-document.getElementById('gallery').addEventListener('click', e => {
-  if (e.target.id !== 'gallery') {
-    console.log('event listener gucci');
+  const cards = document.getElementsByClassName('card');
+
+  // Attaches event listener to each employee card.
+  // Event handler creates popup window for the clicked employee.
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i];
+    card.addEventListener('click', () => {
+      createModal(people, card.dataset.index);
+    });
   }
-});
+}
+
+runProgram();
