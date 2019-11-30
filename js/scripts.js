@@ -1,5 +1,7 @@
+// Defined in fetch() as the returned json data
 let people;
 
+// Creates a card for each employee and displays them.
 function createGallery(people) {
   let galleryHTML = '';
   for (let i = 0; i < people.length; i++) {
@@ -27,6 +29,9 @@ function formatDOB(person) {
   return dob.replace(regex, replacement);
 }
 
+// Creates popup window with additional employee info.
+// Takes json data and an index number in order to access the appropriate
+// employee data.
 function createModal(people, index) {
   const person = people[index];
   const modalContainer = document.createElement('div');
@@ -57,10 +62,7 @@ function createModal(people, index) {
     `;
 }
 
-// dob:
-//  age: 68
-//  date: "1951-02-08T08:11:08.695Z"
-
+// Returns employee info and calls createGallery() to display it.
 fetch(
   'https://randomuser.me/api/?results=15&inc=name,email,location,dob,picture,cell&nat=us&noinfo'
 )
@@ -71,8 +73,16 @@ fetch(
     createGallery(people);
   });
 
-const cards = document.getElementsByClassName('card');
-for (let i = 0; i < cards.length; i++) {
-  const card = cards[i];
-  card.addEventListener('click', () => createModal(people, card.dataset.index));
-}
+// Attaches event listener to each employee card.
+// Event handler creates popup window for the clicked employee.
+// const cards = document.getElementsByClassName('card');
+// for (let i = 0; i < cards.length; i++) {
+//   const card = cards[i];
+//   card.addEventListener('click', () => createModal(people, card.dataset.index));
+// }
+
+document.getElementById('gallery').addEventListener('click', e => {
+  if (e.target.id !== 'gallery') {
+    console.log('event listener gucci');
+  }
+});
